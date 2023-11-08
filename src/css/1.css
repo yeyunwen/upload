@@ -1,0 +1,82 @@
+:root {
+  --progress: 20%;
+  --progress-border-radius: 5px
+}
+
+.upload {
+  width: 300px;
+  height: 300px;
+  background: #fff;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+}
+
+.upload:hover {
+  border-color: rgb(46, 109, 227);
+}
+
+.upload.select .upload-select,
+.upload.progress .upload-progress,
+.upload.select .upload-select{
+  display: block;
+}
+
+.upload-select {
+  display: none;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-select input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.upload-select::before {
+  content: '上传文件';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.upload-progress {
+  display: none;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-progress-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  text-align: center;
+}
+
+.progress-bar {
+  height: 10px;
+  background: #ccc;
+  border-radius: var(--progress-border-radius);
+}
+
+.progress-bar::after {
+  display: block;
+  content: '';
+  width: var(--progress);
+  height: 100%;
+  background: rgb(46, 109, 227);
+  border-radius: var(--progress-border-radius);
+}
+
+.cancel {
+  margin-top: 20px;
+  cursor: pointer;
+}
