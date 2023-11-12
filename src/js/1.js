@@ -41,26 +41,30 @@ doms.selectFile.onchange = function () {
   };
   reader.readAsDataURL(file);
   // 上传
+  console.log(file);
   cancelUpload = upload(file, setProgress, (result) => {
     showArea("result");
+    doms.img.src = result.data;
   });
 };
 
 function upload(file, onProgress, onFinish) {
-  let p = 0;
-  onProgress(p);
-  const timerId = setInterval(() => {
-    p += Math.random() * 10;
-    if (p > 100) {
-      p = 100;
-      onFinish("服务器的响应结果");
-      clearInterval(timerId);
-    }
-    onProgress(p);
-  }, 50);
+  const xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    const resp = JSON.parse(xhr.responseText);
+    onFinish(resp);
+  };
+  xhr.upload.onprogress = (e) => {
+    const percent = Math.floor((e.loaded / e.total) * 100);
+    onProgress(percent);
+  };
+  xhr.open("POST", "http://127.0.0.1:3000/upload");
+  const form = new FormData();
+  form.append("file", file);
+  xhr.send(form);
+
   return function () {
-    // 取消
-    clearInterval(timerId);
+    xhr.abort();
   };
 }
 
