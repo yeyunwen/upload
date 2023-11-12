@@ -1,5 +1,6 @@
 const doms = {
   container: document.querySelector(".upload"),
+  select: document.querySelector(".upload-select"),
   selectFile: document.querySelector(".upload-select input"),
   progress: document.querySelector(".upload-progress"),
   progressText: document.querySelector(".progress-text"),
@@ -24,11 +25,37 @@ function cancel() {
   showArea("select");
   doms.selectFile.value = null;
 }
-doms.selectFile.onchange = function () {
-  if (this.files.length === 0) {
+
+doms.select.ondragenter = (e) => {
+  e.preventDefault();
+  doms.select.classList.add("draging");
+};
+doms.select.ondragleave = (e) => {
+  doms.select.classList.remove("draging");
+};
+doms.select.ondragover = (e) => {
+  e.preventDefault();
+};
+doms.select.ondrop = (e) => {
+  const files = e.dataTransfer.files;
+  if (files.length !== 1) {
+    alert("只能上传一个文件");
     return;
   }
-  const file = this.files[0];
+  if (!e.dataTransfer.types.includes("Files")) {
+    alert("上传文件类型不合法");
+    return;
+  }
+  doms.select.classList.remove("draging");
+  doms.selectFile.files = e.dataTransfer.files;
+  changehandler();
+};
+
+function changehandler() {
+  if (doms.selectFile.files.length === 0) {
+    return;
+  }
+  const file = doms.selectFile.files[0];
   if (!validateFile(file)) {
     return;
   }
@@ -46,8 +73,9 @@ doms.selectFile.onchange = function () {
     showArea("result");
     doms.img.src = result.data;
   });
-};
+}
 
+doms.selectFile.onchange = changehandler;
 function upload(file, onProgress, onFinish) {
   const xhr = new XMLHttpRequest();
   xhr.onload = function () {
